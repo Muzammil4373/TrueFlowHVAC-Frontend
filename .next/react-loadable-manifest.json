@@ -11,6 +11,12 @@
       "static/chunks/node_modules_swiper_modules_index_mjs.js"
     ]
   },
+  "..\\components\\sections\\ServiceAreaMap.jsx -> leaflet": {
+    "id": "..\\components\\sections\\ServiceAreaMap.jsx -> leaflet",
+    "files": [
+      "static/chunks/node_modules_leaflet_dist_leaflet-src_js.js"
+    ]
+  },
   "..\\components\\sections\\TestimonialSlider.jsx -> swiper": {
     "id": "..\\components\\sections\\TestimonialSlider.jsx -> swiper",
     "files": [
@@ -21,6 +27,12 @@
     "id": "..\\components\\sections\\TestimonialSlider.jsx -> swiper/modules",
     "files": [
       "static/chunks/node_modules_swiper_modules_index_mjs.js"
+    ]
+  },
+  "service-areas\\index.js -> ../../components/sections/ServiceAreaMap": {
+    "id": "service-areas\\index.js -> ../../components/sections/ServiceAreaMap",
+    "files": [
+      "static/chunks/components_sections_ServiceAreaMap_jsx.js"
     ]
   }
 }
