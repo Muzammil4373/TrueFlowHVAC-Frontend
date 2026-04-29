@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import Layout from '../components/layout/Layout';
 import HeroCarousel from '../components/sections/HeroCarousel';
 import TestimonialSlider from '../components/sections/TestimonialSlider';
-import ContactForm from '../components/ui/ContactForm';
+import ContactForm from '../../components/ui/ContactForm';
 import { SERVICES } from '../lib/services';
 import { SERVICE_AREAS } from '../lib/locations';
 

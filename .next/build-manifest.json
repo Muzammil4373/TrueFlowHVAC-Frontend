@@ -27,10 +27,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/track-ticket": [
+    "/service-areas": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/track-ticket.js"
+      "static/chunks/pages/service-areas.js"
     ]
   },
   "ampFirstPages": []

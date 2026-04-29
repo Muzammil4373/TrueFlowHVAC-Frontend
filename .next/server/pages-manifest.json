@@ -3,5 +3,8 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/": "pages/index.js",
-  "/track-ticket": "pages/track-ticket.js"
+  "/contact": "pages/contact.js",
+  "/blog": "pages/blog.js",
+  "/about": "pages/about.js",
+  "/service-areas": "pages/service-areas.js"
 }
