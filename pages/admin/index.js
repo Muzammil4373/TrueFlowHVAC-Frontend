@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import Layout from '../components/layout/Layout';
-import HeroCarousel from '../components/sections/HeroCarousel';
-import TestimonialSlider from '../components/sections/TestimonialSlider';
+import Layout from '../../components/layout/Layout';
+import HeroCarousel from '../../components/sections/HeroCarousel';
+import TestimonialSlider from '../../components/sections/TestimonialSlider';
 import ContactForm from '../../components/ui/ContactForm';
-import { SERVICES } from '../lib/services';
-import { SERVICE_AREAS } from '../lib/locations';
+import { SERVICES } from '../../lib/services';
+import { SERVICE_AREAS } from '../../lib/locations';
 
 const PHONE_DIRECT = process.env.NEXT_PUBLIC_PHONE        || '(630) 999-0127';
 const PHONE_OFFICE = process.env.NEXT_PUBLIC_PHONE_OFFICE || '(888) 581-5178';
