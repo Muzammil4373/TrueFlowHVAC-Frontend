@@ -1,266 +1,398 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { motion, AnimatePresence } from 'framer-motion';
-import toast, { Toaster } from 'react-hot-toast';
-import { getAdminStats, getAdminTickets, updateAdminTicket } from '../../lib/api';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import Layout from '../components/layout/Layout';
+import HeroCarousel from '../components/sections/HeroCarousel';
+import TestimonialSlider from '../components/sections/TestimonialSlider';
+import ContactForm from '../components/ui/ContactForm';
+import { SERVICES } from '../lib/services';
+import { SERVICE_AREAS } from '../lib/locations';
 
-const STATUS_STYLES = {
-  'Pending':     { bg:'bg-yellow-50',  text:'text-yellow-700',  dot:'bg-yellow-500',  border:'border-yellow-200' },
-  'In Progress': { bg:'bg-blue-50',    text:'text-blue-700',    dot:'bg-blue-500',    border:'border-blue-200'   },
-  'Completed':   { bg:'bg-green-50',   text:'text-green-700',   dot:'bg-green-500',   border:'border-green-200'  },
-  'Cancelled':   { bg:'bg-red-50',     text:'text-red-700',     dot:'bg-red-500',     border:'border-red-200'    },
-};
-const PRIORITY_COLORS = {
-  'Emergency': 'text-red-600 font-bold',
-  'High':      'text-orange-600 font-semibold',
-  'Medium':    'text-yellow-600',
-  'Low':       'text-slate-400',
-};
+const PHONE_DIRECT = process.env.NEXT_PUBLIC_PHONE        || '(630) 999-0127';
+const PHONE_OFFICE = process.env.NEXT_PUBLIC_PHONE_OFFICE || '(888) 581-5178';
+const WA           = process.env.NEXT_PUBLIC_WHATSAPP     || '18885815178';
+const EMAIL        = process.env.NEXT_PUBLIC_EMAIL        || 'truflowhvac@gmail.com';
 
-export default function AdminDashboard() {
-  const router = useRouter();
-  const [admin, setAdmin]         = useState(null);
-  const [stats, setStats]         = useState(null);
-  const [tickets, setTickets]     = useState([]);
-  const [total, setTotal]         = useState(0);
-  const [loading, setLoading]     = useState(true);
-  const [statusFilter, setStatus] = useState('');
-  const [search, setSearch]       = useState('');
-  const [selected, setSelected]   = useState(null);
-  const [updatingId, setUpdId]    = useState(null);
+const whyUs = [
+  { icon:'🔒', title:'Licensed & Insured',           desc:'Fully licensed, bonded & insured for your complete protection.' },
+  { icon:'🏅', title:'Certified EPA & HVAC Techs',   desc:'Every technician holds EPA certification and is NATE-trained.' },
+  { icon:'✅', title:'E-Verify & Background Checked', desc:'All our technicians are E-Verified and background checked.' },
+  { icon:'💰', title:'Honest, Upfront Pricing',       desc:'We quote before we work. Zero hidden fees. Zero surprises.' },
+  { icon:'⚡', title:'Same-Day Service',              desc:'Most repairs completed the same day you call.' },
+  { icon:'🌙', title:'24/7 Emergency Line',           desc:'Real person answers every call, day or night, 365 days a year.' },
+];
 
-  useEffect(() => {
-    const token = typeof window !== 'undefined' && localStorage.getItem('truflow_token');
-    if (!token) { router.replace('/admin/login'); return; }
-    const a = JSON.parse(localStorage.getItem('truflow_admin') || '{}');
-    setAdmin(a);
-    fetchAll();
-  }, []);
+const serviceChecklist = [
+  'Furnace Repair & Installation',
+  'AC Repair & Installation',
+  'Gas Water Heater Installation & Repair',
+  'Maintenance & Tune-Ups',
+  'Gas Water Heater\'s & Boiler Installation and Maintenance Repair',
+];
 
-  useEffect(() => { fetchTickets(); }, [statusFilter, search]);
+const trustBadges = [
+  { icon:'🔒', text:'Licensed & Insured' },
+  { icon:'🏅', text:'Certified EPA & HVAC Technicians' },
+  { icon:'✅', text:'E-Verify & Background Checked Technicians' },
+  { icon:'💰', text:'Honest, Upfront Pricing' },
+];
 
-  const fetchAll = async () => {
-    setLoading(true);
-    try {
-      const [sRes, tRes] = await Promise.all([getAdminStats(), getAdminTickets()]);
-      setStats(sRes.data.stats);
-      setTickets(tRes.data.tickets);
-      setTotal(tRes.data.total);
-    } catch { toast.error('Failed to load data'); }
-    finally { setLoading(false); }
-  };
+const galleryImages = [
+  { url:'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=600&q=80', label:'AC Repair' },
+  { url:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',   label:'Furnace Service' },
+  { url:'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&q=80', label:'Installation' },
+  { url:'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&q=80', label:'Maintenance' },
+  { url:'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&q=80', label:'Boiler Service' },
+  { url:'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80', label:'Water Heater' },
+];
 
-  const fetchTickets = async () => {
-    try {
-      const res = await getAdminTickets({ status: statusFilter || undefined, search: search || undefined });
-      setTickets(res.data.tickets);
-      setTotal(res.data.total);
-    } catch {}
-  };
+const fadeUp   = { hidden:{ opacity:0, y:40 }, show:{ opacity:1, y:0, transition:{ duration:0.6 } } };
+const stagger  = { hidden:{}, show:{ transition:{ staggerChildren:0.1 } } };
 
-  const handleUpdate = async (id, newStatus) => {
-    setUpdId(id);
-    try {
-      await updateAdminTicket(id, { status: newStatus });
-      toast.success(`Status → ${newStatus}`);
-      fetchAll();
-      setSelected(s => s && s._id === id ? { ...s, status: newStatus } : s);
-    } catch { toast.error('Update failed'); }
-    finally { setUpdId(null); }
-  };
-
-  const logout = () => {
-    localStorage.removeItem('truflow_token');
-    localStorage.removeItem('truflow_admin');
-    router.push('/admin/login');
-  };
-
-  const statCards = stats ? [
-    { label:'Total Tickets',  val: stats.total,      icon:'🎫', color:'from-blue-500 to-cyan-400'   },
-    { label:'Pending',        val: stats.pending,    icon:'⏳', color:'from-yellow-500 to-amber-400' },
-    { label:'In Progress',    val: stats.inProgress, icon:'🔧', color:'from-orange-500 to-red-400'   },
-    { label:'Completed',      val: stats.completed,  icon:'✅', color:'from-green-500 to-emerald-400'},
-    { label:'Emergency',      val: stats.emergency,  icon:'🚨', color:'from-red-600 to-red-500'      },
-    { label:'This Week',      val: stats.weeklyNew,  icon:'📈', color:'from-violet-500 to-purple-400'},
-  ] : [];
-
+export default function HomePage() {
   return (
-    <div className="min-h-screen bg-slate-50 font-body">
-      <Toaster position="top-right" />
+    <Layout>
+      {/* HERO */}
+      <HeroCarousel />
 
-      {/* Top Nav */}
-      <header className="bg-brand-950 text-white px-6 py-4 flex items-center justify-between shadow-lg">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center font-bold text-sm">T</div>
-          <div>
-            <div className="font-display font-bold text-sm uppercase tracking-wide">TruFlow HVAC</div>
-            <div className="text-[10px] text-slate-400">Admin Dashboard</div>
+      {/* ── EXPERT HVAC BANNER ── */}
+      <section className="bg-gradient-to-r from-red-900 via-red-800 to-red-900 py-8 px-4 text-center">
+        <motion.div initial={{opacity:0,y:10}} whileInView={{opacity:1,y:0}} viewport={{once:true}}>
+          <h2 className="font-display font-extrabold text-3xl md:text-4xl text-white mb-1">
+            Expert HVAC Services in Chicago Illinois
+          </h2>
+          <p className="font-display text-xl md:text-2xl text-yellow-400 font-bold tracking-wide">
+            Fast &bull; Reliable &bull; Affordable
+          </p>
+        </motion.div>
+      </section>
+
+      {/* ── AUTHORIZED DEALER + FLYER SECTION ── */}
+      <section className="py-16 bg-gradient-to-br from-slate-900 via-brand-950 to-slate-900 px-4 overflow-hidden relative">
+        <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,white 0,white 1px,transparent 1px,transparent 40px)'}} />
+        <div className="max-w-7xl mx-auto relative">
+          <div className="text-center mb-10">
+            <span className="inline-flex items-center gap-2 bg-orange-500/20 text-orange-400 border border-orange-500/30 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-widest mb-3">
+              🏆 Official Partnerships
+            </span>
+            <h2 className="font-display font-extrabold text-3xl md:text-4xl text-white mb-2">
+              Authorized Goodman Dealer — 10-Year Warranty
+            </h2>
+            <p className="text-slate-400 text-base max-w-2xl mx-auto">
+              As an <span className="text-orange-400 font-semibold">authorized Goodman dealer</span>, we offer factory-backed warranties, exclusive financing, and priority parts access for our customers across Chicago Illinois.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 items-start">
+            {/* LEFT — flyer image */}
+            <motion.div initial={{opacity:0,x:-40}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:0.7}}>
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+                <img
+                  src="/images/truflow-template.jpeg"
+                  alt="TruFlow HVAC — Expert HVAC Services in Chicago Illinois"
+                  className="w-full object-cover"
+                />
+              </div>
+            </motion.div>
+
+            {/* RIGHT — content cards */}
+            <motion.div initial={{opacity:0,x:40}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:0.7}} className="space-y-4">
+
+              {/* Dealer + Warranty badges */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-red-900/60 border-2 border-red-600 rounded-2xl p-4 text-center">
+                  <div className="text-white font-display font-extrabold text-lg leading-tight">Goodman®</div>
+                  <div className="text-yellow-400 font-bold text-sm uppercase tracking-wider mt-1">Authorized Dealer</div>
+                </div>
+                <div className="bg-yellow-600/20 border-2 border-yellow-500 rounded-2xl p-4 text-center">
+                  <div className="text-yellow-400 font-display font-extrabold text-3xl leading-none">10</div>
+                  <div className="text-white font-bold text-xs uppercase tracking-wider mt-1">Years Labor &amp; Parts Warranty</div>
+                </div>
+              </div>
+
+              {/* Service checklist */}
+              <div className="glass-dark rounded-2xl p-5 border border-white/10">
+                <div className="text-orange-400 font-display font-bold text-sm uppercase tracking-widest mb-3">Our Services</div>
+                <ul className="space-y-2.5">
+                  {serviceChecklist.map((item) => (
+                    <li key={item} className="flex items-start gap-3 text-white text-sm">
+                      <span className="text-orange-400 text-base flex-shrink-0 mt-0.5">✓</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-3 pt-3 border-t border-white/10">
+                  <span className="text-yellow-400 font-bold text-sm">Licensed &amp; Insured</span>
+                </div>
+              </div>
+
+              {/* Trust badges */}
+              <div className="glass-dark rounded-2xl p-5 border border-white/10">
+                <div className="text-orange-400 font-display font-bold text-sm uppercase tracking-widest mb-3">Why Choose TruFlow</div>
+                <ul className="space-y-2">
+                  {trustBadges.map((b) => (
+                    <li key={b.text} className="flex items-center gap-3 text-slate-300 text-sm">
+                      <span>{b.icon}</span> {b.text}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* 0% APR Financing */}
+              <div className="bg-gradient-to-r from-yellow-600/30 to-yellow-500/10 border-2 border-yellow-500/60 rounded-2xl p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="text-3xl">✅</span>
+                  <div>
+                    <div className="font-display font-extrabold text-white text-xl">0% APR Financing Available</div>
+                    <div className="text-yellow-400 text-sm font-semibold">Special financing through Goodman &amp; Liberty</div>
+                  </div>
+                </div>
+                <ul className="space-y-1.5 mb-4">
+                  {[
+                    '0% APR interest financing — no extra cost to you',
+                    'Flexible monthly payment plans',
+                    'No money down options available',
+                    'Fast approval — same-day decisions',
+                    'Available on new system installations',
+                  ].map(item => (
+                    <li key={item} className="flex items-center gap-2 text-slate-300 text-sm">
+                      <span className="text-yellow-400 text-xs">✓</span> {item}
+                    </li>
+                  ))}
+                </ul>
+                <div className="flex gap-3 flex-wrap">
+                  <a href={`tel:${PHONE_DIRECT}`} className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all">
+                    📞 Ask About Financing
+                  </a>
+                  <Link href="/contact" className="flex items-center gap-2 border border-white/20 text-white hover:bg-white/10 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all">
+                    Get a Free Quote →
+                  </Link>
+                </div>
+              </div>
+
+              {/* Website + contact row */}
+              <div className="grid grid-cols-1 gap-3">
+                <div className="flex items-center gap-3 glass-dark border border-white/10 rounded-2xl px-4 py-3">
+                  <span className="text-xl">🌐</span>
+                  <div>
+                    <div className="text-slate-400 text-xs">Website</div>
+                    <div className="text-white font-semibold text-sm">www.truflowhvac.com</div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* contact bar */}
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              { icon:'📞', label:'Direct Line (24/7)', val: PHONE_DIRECT, href:`tel:${PHONE_DIRECT}`,         color:'bg-orange-500' },
+              { icon:'🏢', label:'Office & WhatsApp',   val: PHONE_OFFICE, href:`https://wa.me/${WA}`,       color:'bg-green-500', ext:true },
+              { icon:'✉️', label:'Email Us',            val: EMAIL,        href:`mailto:${EMAIL}`,            color:'bg-blue-600'  },
+            ].map(c => (
+              <a key={c.label} href={c.href} target={c.ext?'_blank':undefined} rel={c.ext?'noreferrer':undefined}
+                className="flex items-center gap-4 glass-dark border border-white/10 hover:border-orange-500/40 rounded-2xl p-4 transition-all group">
+                <div className={`w-10 h-10 ${c.color} rounded-xl flex items-center justify-center text-lg flex-shrink-0`}>{c.icon}</div>
+                <div>
+                  <div className="text-slate-400 text-xs uppercase tracking-wider">{c.label}</div>
+                  <div className="text-white font-semibold text-sm group-hover:text-orange-400 transition-colors">{c.val}</div>
+                </div>
+              </a>
+            ))}
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          {admin && <span className="text-slate-400 text-sm hidden md:block">👤 {admin.email}</span>}
-          <a href="/" className="text-slate-400 hover:text-white text-sm transition-colors">← Site</a>
-          <button onClick={logout} className="text-slate-400 hover:text-red-400 text-sm transition-colors">Logout</button>
-        </div>
-      </header>
+      </section>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="font-display font-extrabold text-2xl text-brand-950">Service Tickets</h1>
-          <button onClick={fetchAll} className="flex items-center gap-2 text-sm text-slate-500 hover:text-orange-500 bg-white border border-slate-200 px-4 py-2 rounded-xl transition-all hover:border-orange-300">
-            ↻ Refresh
-          </button>
+      {/* ── SERVICES ── */}
+      <section className="py-24 bg-white px-4">
+        <div className="max-w-7xl mx-auto">
+          <motion.div initial="hidden" whileInView="show" viewport={{once:true}} variants={stagger}>
+            <motion.div variants={fadeUp} className="text-center mb-14">
+              <span className="section-tag">🔧 What We Do</span>
+              <h2 className="section-title text-4xl md:text-5xl">Our HVAC Services</h2>
+              <p className="section-subtitle max-w-2xl mx-auto">Complete heating, cooling & water heater solutions for Chicago Illinois homes and businesses.</p>
+            </motion.div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {SERVICES.map((s) => (
+                <motion.div key={s.slug} variants={fadeUp}>
+                  <Link href={`/services/${s.slug}`} className="block group service-card">
+                    <div className={`h-2 bg-gradient-to-r ${s.color}`} />
+                    <div className="p-6">
+                      <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center text-2xl mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                        {s.icon}
+                      </div>
+                      <h3 className="font-display font-bold text-lg text-brand-950 mb-2 leading-tight">{s.name}</h3>
+                      <p className="service-card-desc">{s.shortDesc}</p>
+                      <div className="flex flex-wrap gap-1.5 mb-4">
+                        {s.features.slice(0,3).map(f => (
+                          <span key={f} className="service-card-tag">{f}</span>
+                        ))}
+                      </div>
+                      <div className="service-card-link">
+                        Learn more <span className="group-hover:translate-x-1 transition-transform">→</span>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
         </div>
+      </section>
 
-        {/* Stats */}
-        {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-            {statCards.map(s => (
-              <motion.div key={s.label} whileHover={{y:-2}} className="bg-white rounded-2xl border border-slate-100 shadow-card overflow-hidden">
-                <div className={`h-1 bg-gradient-to-r ${s.color}`} />
-                <div className="p-4 text-center">
-                  <div className="text-xl mb-1">{s.icon}</div>
-                  <div className="font-display font-extrabold text-2xl text-brand-950">{s.val}</div>
-                  <div className="text-xs text-slate-400 mt-0.5">{s.label}</div>
+      {/* ── WHY CHOOSE US ── */}
+      <section className="py-24 bg-gradient-to-b from-slate-50 to-white px-4 overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <motion.div initial={{opacity:0,x:-40}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:0.7}}>
+              <span className="section-tag">💎 Why TruFlow</span>
+              <h2 className="section-title text-4xl md:text-5xl mb-5">The TruFlow Difference</h2>
+              <p className="section-subtitle mb-8">We're not just another HVAC company. Here's why Chicagoland homeowners trust us — and keep coming back.</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {whyUs.map((w, i) => (
+                  <motion.div key={w.title} initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:i*0.08}}
+                    className="flex gap-3 p-4 bg-white rounded-2xl border border-slate-100 shadow-card hover:border-orange-200 hover:shadow-card-hover transition-all">
+                    <span className="text-2xl flex-shrink-0">{w.icon}</span>
+                    <div>
+                      <div className="font-display font-semibold text-sm text-brand-950 mb-0.5">{w.title}</div>
+                      <div className="text-xs text-slate-500 leading-relaxed">{w.desc}</div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+            <motion.div initial={{opacity:0,x:40}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:0.7}}>
+              <div className="glass-white p-8 rounded-3xl shadow-glass-lg">
+                <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-2xl px-5 py-3 mb-6 -mx-2">
+                  <div className="font-display font-bold text-lg">Get a Free Quote</div>
+                  <div className="text-orange-100 text-xs mt-0.5">We'll get back to you within 2 hours</div>
+                </div>
+                <ContactForm />
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 0% APR FINANCING FULL SECTION ── */}
+      <section className="py-20 bg-gradient-to-br from-yellow-900/40 via-brand-950 to-brand-950 px-4 overflow-hidden relative border-y border-yellow-600/20">
+        <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#f59e0b 0,#f59e0b 1px,transparent 1px,transparent 40px)'}} />
+        <div className="max-w-5xl mx-auto relative text-center">
+          <motion.div initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.6}}>
+            <div className="inline-flex items-center justify-center gap-3 mb-5">
+              <span className="text-4xl">✅</span>
+              <h2 className="font-display font-extrabold text-4xl md:text-5xl text-white">
+                0% APR Financing Also Available
+              </h2>
+              <span className="text-4xl">✅</span>
+            </div>
+            <p className="text-slate-300 text-lg mb-10 max-w-2xl mx-auto">
+              Don't let cost stop you from getting the HVAC system your home deserves. We offer <span className="text-yellow-400 font-bold">0% APR special financing</span> for our customers — making comfort affordable for every budget.
+            </p>
+            <div className="grid md:grid-cols-3 gap-5 mb-10">
+              {[
+                { icon:'💳', title:'0% APR Interest',     desc:'No interest financing available on qualifying HVAC system purchases.' },
+                { icon:'📅', title:'Flexible Payments',   desc:'Choose a monthly payment plan that works for your budget.' },
+                { icon:'⚡', title:'Same-Day Approval',   desc:'Fast financing decisions — get approved and installed same day.' },
+              ].map(f => (
+                <div key={f.title} className="glass-dark border border-yellow-500/20 rounded-2xl p-5 text-center">
+                  <div className="text-3xl mb-3">{f.icon}</div>
+                  <div className="font-display font-bold text-white text-lg mb-1">{f.title}</div>
+                  <div className="text-slate-400 text-sm leading-relaxed">{f.desc}</div>
+                </div>
+              ))}
+            </div>
+            <div className="flex flex-wrap justify-center gap-4">
+              <a href={`tel:${PHONE_DIRECT}`} className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black font-display font-extrabold px-8 py-4 rounded-2xl text-base shadow-xl transition-all hover:-translate-y-0.5">
+                📞 Call to Apply — {PHONE_DIRECT}
+              </a>
+              <Link href="/contact" className="flex items-center gap-2 border-2 border-white/30 text-white font-display font-bold px-8 py-4 rounded-2xl text-base hover:bg-white/10 transition-all">
+                Learn More →
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── SERVICE GALLERY ── */}
+      <section className="py-24 bg-white px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="section-tag">📸 Our Work</span>
+            <h2 className="section-title text-4xl">Service Gallery</h2>
+            <p className="section-subtitle">Quality HVAC work across Chicago Illinois — delivered by our certified technicians.</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {galleryImages.map((img, i) => (
+              <motion.div key={i} initial={{opacity:0,scale:0.95}} whileInView={{opacity:1,scale:1}} viewport={{once:true}} transition={{delay:i*0.07}}
+                className="group relative rounded-2xl overflow-hidden aspect-video shadow-card hover:shadow-card-hover transition-all duration-300">
+                <img src={img.url} alt={img.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-brand-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                  <span className="text-white font-semibold text-sm">{img.label}</span>
                 </div>
               </motion.div>
             ))}
           </div>
-        )}
+        </div>
+      </section>
 
-        {/* Filters */}
-        <div className="flex flex-wrap gap-3 mb-5 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-          <input type="text" placeholder="🔍 Search by name, email, ticket ID…" value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="flex-1 min-w-[200px] border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-orange-400"
-          />
-          <div className="flex gap-2 flex-wrap">
-            {['', 'Pending', 'In Progress', 'Completed', 'Cancelled'].map(s => (
-              <button key={s} onClick={() => setStatus(s)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${statusFilter === s ? 'bg-orange-500 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
-              >
-                {s || 'All'}
-              </button>
+      {/* ── SERVICE AREAS ── */}
+      <section className="py-24 bg-slate-50 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="section-tag">📍 Where We Serve</span>
+            <h2 className="section-title text-4xl md:text-5xl">Serving {SERVICE_AREAS.length}+ Communities</h2>
+            <p className="section-subtitle">Expert HVAC service across Chicagoland — from Naperville to Elgin and everywhere in between.</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 mb-8">
+            {SERVICE_AREAS.slice(0,15).map((city, i) => (
+              <motion.div key={city.slug} initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:i*0.04}}>
+                <Link href={`/service-areas/${city.slug}`}
+                  className="group relative block bg-white border border-slate-100 rounded-2xl p-4 text-center shadow-sm hover:shadow-card hover:border-orange-200 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="text-xl mb-1.5">📍</div>
+                  <div className="font-display font-semibold text-sm text-brand-950">{city.name}</div>
+                  <div className="text-[10px] text-slate-400 mt-0.5">{city.county} Co.</div>
+                </Link>
+              </motion.div>
             ))}
           </div>
-        </div>
-
-        {/* Table */}
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-card overflow-hidden">
-          <div className="px-5 py-3 border-b border-slate-50 flex justify-between items-center">
-            <span className="text-sm text-slate-500">{total} ticket{total !== 1 ? 's' : ''} found</span>
+          <div className="text-center">
+            <Link href="/service-areas" className="btn-primary">View All {SERVICE_AREAS.length} Service Areas →</Link>
           </div>
-          {loading ? (
-            <div className="text-center py-16 text-slate-400">
-              <div className="animate-spin text-3xl mb-3">⚙️</div>
-              <p className="text-sm">Loading tickets…</p>
-            </div>
-          ) : tickets.length === 0 ? (
-            <div className="text-center py-16 text-slate-400">
-              <div className="text-4xl mb-3">🎫</div>
-              <p className="text-sm">No tickets found.</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-slate-50 border-b border-slate-100">
-                    {['Ticket ID','Customer','Service','City','Priority','Status','Date','Actions'].map(h => (
-                      <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {tickets.map(t => {
-                    const sc = STATUS_STYLES[t.status] || STATUS_STYLES['Pending'];
-                    return (
-                      <tr key={t._id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-                        <td className="px-4 py-3">
-                          <span className="font-mono text-xs font-bold text-brand-950">{t.ticketId}</span>
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="font-semibold text-sm text-brand-950">{t.name}</div>
-                          <div className="text-xs text-slate-400">{t.email}</div>
-                        </td>
-                        <td className="px-4 py-3 text-sm text-slate-700 whitespace-nowrap">{t.serviceType}</td>
-                        <td className="px-4 py-3 text-sm text-slate-600">{t.city || '—'}</td>
-                        <td className="px-4 py-3">
-                          <span className={`text-xs ${PRIORITY_COLORS[t.priority] || 'text-slate-400'}`}>{t.priority}</span>
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border ${sc.bg} ${sc.text} ${sc.border}`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${sc.dot}`}></span>
-                            {t.status}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-xs text-slate-400 whitespace-nowrap">
-                          {new Date(t.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'})}
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex gap-1.5">
-                            {['Pending','In Progress','Completed'].filter(s => s !== t.status).map(s => (
-                              <button key={s} onClick={() => handleUpdate(t._id, s)} disabled={updatingId===t._id}
-                                className="px-2.5 py-1 bg-slate-100 hover:bg-orange-500 hover:text-white text-slate-600 rounded-lg text-xs transition-colors disabled:opacity-50 whitespace-nowrap"
-                              >
-                                {s === 'Completed' ? '✓' : s === 'In Progress' ? '▶' : '⏸'} {s.split(' ')[0]}
-                              </button>
-                            ))}
-                            <button onClick={() => setSelected(t)} className="px-2.5 py-1 bg-brand-900 text-white rounded-lg text-xs hover:bg-brand-800 transition-colors">View</button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
         </div>
-      </div>
+      </section>
 
-      {/* Detail modal */}
-      <AnimatePresence>
-        {selected && (
-          <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => setSelected(null)}
-          >
-            <motion.div initial={{opacity:0,scale:0.95,y:20}} animate={{opacity:1,scale:1,y:0}} exit={{opacity:0,scale:0.95}}
-              className="bg-white rounded-3xl shadow-glass-lg max-w-lg w-full overflow-hidden"
-              onClick={e => e.stopPropagation()}
-            >
-              <div className="bg-brand-950 px-6 py-4 flex justify-between items-center">
-                <div>
-                  <div className="font-mono font-bold text-xl text-white">{selected.ticketId}</div>
-                  <div className="text-slate-400 text-xs mt-0.5">{new Date(selected.createdAt).toLocaleString('en-US')}</div>
-                </div>
-                <button onClick={() => setSelected(null)} className="text-slate-400 hover:text-white text-xl transition-colors">✕</button>
-              </div>
-              <div className="p-6 space-y-3">
-                {[['Name', selected.name], ['Email', selected.email], ['Phone', selected.phone], ['Service', selected.serviceType], ['City', selected.city || '—'], ['Priority', selected.priority], ['Status', selected.status]].map(([k,v]) => (
-                  <div key={k} className="flex gap-3 py-2 border-b border-slate-50">
-                    <span className="w-20 text-xs text-slate-400 uppercase tracking-wider font-semibold pt-0.5 flex-shrink-0">{k}</span>
-                    <span className="text-sm font-medium text-brand-950">{v}</span>
-                  </div>
-                ))}
-                <div className="pt-2">
-                  <div className="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-2">Message</div>
-                  <div className="bg-slate-50 rounded-xl p-3 text-sm text-slate-700 leading-relaxed italic">"{selected.message}"</div>
-                </div>
-                <div className="flex gap-2 pt-2">
-                  {['Pending','In Progress','Completed'].map(s => (
-                    <button key={s} onClick={() => handleUpdate(selected._id, s)}
-                      className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${selected.status === s ? 'bg-orange-500 text-white' : 'bg-slate-100 text-slate-600 hover:bg-orange-50 hover:text-orange-500'}`}
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
+      {/* ── TESTIMONIALS ── */}
+      <TestimonialSlider />
+
+      {/* ── FINAL CTA ── */}
+      <section className="relative py-24 px-4 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-red-800 to-red-900" />
+        <div className="absolute inset-0 opacity-10" style={{backgroundImage:'repeating-linear-gradient(45deg,white 0,white 1px,transparent 1px,transparent 60px)'}} />
+        <div className="relative max-w-3xl mx-auto text-center">
+          <motion.div initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.6}}>
+            <h2 className="font-display font-extrabold text-5xl text-white mb-2">HVAC Emergency?</h2>
+            <h3 className="font-display font-extrabold text-3xl text-yellow-400 mb-5">We Answer 24/7.</h3>
+            <p className="text-red-100 text-lg mb-8 max-w-xl mx-auto">
+              Expert HVAC services in Chicago Illinois — Fast, Reliable & Affordable.<br/>
+              <span className="text-yellow-400 font-semibold">0% APR Financing Also Available.</span>
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <a href={`tel:${PHONE_DIRECT}`} className="flex items-center gap-2 bg-white text-red-700 font-display font-extrabold px-7 py-4 rounded-2xl text-base shadow-xl hover:bg-red-50 hover:-translate-y-0.5 transition-all">
+                📞 Direct: {PHONE_DIRECT}
+              </a>
+              <a href={`tel:${PHONE_OFFICE}`} className="flex items-center gap-2 bg-white/20 border border-white/40 text-white font-display font-extrabold px-7 py-4 rounded-2xl text-base hover:bg-white/30 transition-all">
+                🏢 Office: {PHONE_OFFICE}
+              </a>
+              <Link href="/contact" className="btn-ghost text-base px-7 py-4">Get a Free Quote</Link>
+            </div>
+            <div className="mt-5 text-red-200 text-sm">
+              ✉️ <a href={`mailto:${EMAIL}`} className="underline hover:text-white transition-colors">{EMAIL}</a>
+              &nbsp;·&nbsp; 🌐 www.truflowhvac.com
+            </div>
           </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+        </div>
+      </section>
+    </Layout>
   );
 }

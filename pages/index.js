@@ -37,12 +37,12 @@ const trustBadges = [
 ];
 
 const galleryImages = [
-  { url:'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=600&q=80', label:'AC Repair' },
-  { url:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',   label:'Furnace Service' },
-  { url:'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&q=80', label:'Installation' },
-  { url:'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&q=80', label:'Maintenance' },
-  { url:'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&q=80', label:'Boiler Service' },
-  { url:'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80', label:'Water Heater' },
+  { url:'https://www.vizensolutions.com/assets/img/blog/hvac.jpg', label:'AC Repair' },
+  { url:'https://urcts.in/wp-content/uploads/2025/09/hvac-design.webp',   label:'Furnace Service' },
+  { url:'https://studyhub.org.uk/wp-content/uploads/2025/05/coworkers-servicing-hvac-system-min-1-scaled.jpg', label:'Installation' },
+  { url:'https://trinityplumbingpdx.com/wp-content/uploads/2024/10/Repair-Old-Hot-Water-Heater.jpg', label:'Maintenance' },
+  { url:'https://mgcs.net.in/wp-content/uploads/2024/08/the-future-of-smart-hvac-trends-and-innovations.jpg', label:'Boiler Service' },
+  { url:'https://stradaservices.com/wp-content/uploads/2024/05/01-choosing-an-hvac-system-for-your-home.jpg.webp', label:'Water Heater' },
 ];
 
 const fadeUp   = { hidden:{ opacity:0, y:40 }, show:{ opacity:1, y:0, transition:{ duration:0.6 } } };
@@ -98,7 +98,7 @@ export default function HomePage() {
             <motion.div initial={{opacity:0,x:40}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:0.7}} className="space-y-4">
 
               {/* Dealer + Warranty badges */}
-              <div className="grid grid-cols-2 gap-4">
+              {/* <div className="grid grid-cols-2 gap-4">
                 <div className="bg-red-900/60 border-2 border-red-600 rounded-2xl p-4 text-center">
                   <div className="text-white font-display font-extrabold text-lg leading-tight">Goodman®</div>
                   <div className="text-yellow-400 font-bold text-sm uppercase tracking-wider mt-1">Authorized Dealer</div>
@@ -107,7 +107,7 @@ export default function HomePage() {
                   <div className="text-yellow-400 font-display font-extrabold text-3xl leading-none">10</div>
                   <div className="text-white font-bold text-xs uppercase tracking-wider mt-1">Years Labor &amp; Parts Warranty</div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Service checklist */}
               <div className="glass-dark rounded-2xl p-5 border border-white/10">
@@ -209,7 +209,7 @@ export default function HomePage() {
             <motion.div variants={fadeUp} className="text-center mb-14">
               <span className="section-tag">🔧 What We Do</span>
               <h2 className="section-title text-4xl md:text-5xl">Our HVAC Services</h2>
-              <p className="section-subtitle max-w-2xl mx-auto">Complete heating, cooling & water heater solutions for Chicago Illinois homes and businesses.</p>
+              <p className="section-subtitle max-w-2xl mx-auto">Complete Heating, Cooling & Water Heater Solutions for Chicago Homes & Businesses — Reliable, Efficient, and Built to Last.</p>
             </motion.div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {SERVICES.map((s) => (
