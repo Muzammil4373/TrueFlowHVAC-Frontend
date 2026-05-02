@@ -6,7 +6,7 @@ import { SERVICES } from '../../lib/services';
 
 const PHONE_DIRECT = process.env.NEXT_PUBLIC_PHONE        || '(630) 999-0127';
 const PHONE_OFFICE = process.env.NEXT_PUBLIC_PHONE_OFFICE || '(888) 581-5178';
-const WA           = process.env.NEXT_PUBLIC_WHATSAPP     || '18885815178';
+const WA           = process.env.NEXT_PUBLIC_WHATSAPP     || '(888) 581-5178';
 const EMAIL        = process.env.NEXT_PUBLIC_EMAIL        || 'truflowhvac@gmail.com';
 
 export default function Navbar() {

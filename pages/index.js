@@ -24,9 +24,9 @@ const whyUs = [
 const serviceChecklist = [
   'Furnace Repair & Installation',
   'AC Repair & Installation',
-  'Gas Water Heater Installation & Repair',
+  'Water Heaters',
   'Maintenance & Tune-Ups',
-  'Gas Water Heater\'s & Boiler Installation and Maintenance Repair',
+  'Water Heaters & Boiler Installation and Maintenance',
 ];
 
 const trustBadges = [
@@ -39,10 +39,10 @@ const trustBadges = [
 const galleryImages = [
   { url:'https://www.vizensolutions.com/assets/img/blog/hvac.jpg', label:'AC Repair' },
   { url:'https://urcts.in/wp-content/uploads/2025/09/hvac-design.webp',   label:'Furnace Service' },
-  { url:'https://studyhub.org.uk/wp-content/uploads/2025/05/coworkers-servicing-hvac-system-min-1-scaled.jpg', label:'Installation' },
+  { url:'https://stradaservices.com/wp-content/uploads/2024/05/01-choosing-an-hvac-system-for-your-home.jpg.webp', label:'Installation' },
   { url:'https://trinityplumbingpdx.com/wp-content/uploads/2024/10/Repair-Old-Hot-Water-Heater.jpg', label:'Maintenance' },
   { url:'https://mgcs.net.in/wp-content/uploads/2024/08/the-future-of-smart-hvac-trends-and-innovations.jpg', label:'Boiler Service' },
-  { url:'https://stradaservices.com/wp-content/uploads/2024/05/01-choosing-an-hvac-system-for-your-home.jpg.webp', label:'Water Heater' },
+  { url:'images/w.jpeg', label:'Water Heater' },
 ];
 
 const fadeUp   = { hidden:{ opacity:0, y:40 }, show:{ opacity:1, y:0, transition:{ duration:0.6 } } };
@@ -78,7 +78,7 @@ export default function HomePage() {
               Authorized Goodman Dealer — 10-Year Warranty
             </h2>
             <p className="text-slate-400 text-base max-w-2xl mx-auto">
-              As an <span className="text-orange-400 font-semibold">authorized Goodman dealer</span>, we offer factory-backed warranties, exclusive financing, and priority parts access for our customers across Chicago Illinois.
+             As an authorized Goodman dealer, we offer factory-backed warranties, exclusive financing, and priority parts access for our customers across Chicago Illinois.
             </p>
           </div>
 
@@ -97,16 +97,10 @@ export default function HomePage() {
             {/* RIGHT — content cards */}
             <motion.div initial={{opacity:0,x:40}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:0.7}} className="space-y-4">
 
-              {/* Dealer + Warranty badges */}
-              {/* <div className="grid grid-cols-2 gap-4">
-                <div className="bg-red-900/60 border-2 border-red-600 rounded-2xl p-4 text-center">
-                  <div className="text-white font-display font-extrabold text-lg leading-tight">Goodman®</div>
-                  <div className="text-yellow-400 font-bold text-sm uppercase tracking-wider mt-1">Authorized Dealer</div>
-                </div>
-                <div className="bg-yellow-600/20 border-2 border-yellow-500 rounded-2xl p-4 text-center">
-                  <div className="text-yellow-400 font-display font-extrabold text-3xl leading-none">10</div>
-                  <div className="text-white font-bold text-xs uppercase tracking-wider mt-1">Years Labor &amp; Parts Warranty</div>
-                </div>
+              {/* Warranty badge only */}
+              {/* <div className="bg-yellow-600/20 border-2 border-yellow-500 rounded-2xl p-4 text-center">
+                <div className="text-yellow-400 font-display font-extrabold text-4xl leading-none">Authorized</div>
+                <div className="text-white font-bold text-sm uppercase tracking-wider mt-1">Authorized Goodman Dealer — 10-Year Warranty</div>
               </div> */}
 
               {/* Service checklist */}
@@ -143,7 +137,7 @@ export default function HomePage() {
                   <span className="text-3xl">✅</span>
                   <div>
                     <div className="font-display font-extrabold text-white text-xl">0% APR Financing Available</div>
-                    <div className="text-yellow-400 text-sm font-semibold">Special financing through Goodman &amp; Liberty</div>
+                    <div className="text-yellow-400 text-sm font-semibold">0% APR — No money down — Same-day approval</div>
                   </div>
                 </div>
                 <ul className="space-y-1.5 mb-4">
@@ -209,25 +203,25 @@ export default function HomePage() {
             <motion.div variants={fadeUp} className="text-center mb-14">
               <span className="section-tag">🔧 What We Do</span>
               <h2 className="section-title text-4xl md:text-5xl">Our HVAC Services</h2>
-              <p className="section-subtitle max-w-2xl mx-auto">Complete Heating, Cooling & Water Heater Solutions for Chicago Homes & Businesses — Reliable, Efficient, and Built to Last.</p>
+              <p className="section-subtitle max-w-2xl mx-auto">Complete heating, cooling & water heater solutions for Chicago Illinois homes and businesses.</p>
             </motion.div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {SERVICES.map((s) => (
                 <motion.div key={s.slug} variants={fadeUp}>
-                  <Link href={`/services/${s.slug}`} className="block group card-lift bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-card">
+                  <Link href={`/services/${s.slug}`} className="block group service-card">
                     <div className={`h-2 bg-gradient-to-r ${s.color}`} />
                     <div className="p-6">
                       <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center text-2xl mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                         {s.icon}
                       </div>
                       <h3 className="font-display font-bold text-lg text-brand-950 mb-2 leading-tight">{s.name}</h3>
-                      <p className="text-slate-500 text-sm leading-relaxed mb-4">{s.shortDesc}</p>
+                      <p className="service-card-desc text-white">{s.shortDesc}</p>
                       <div className="flex flex-wrap gap-1.5 mb-4">
                         {s.features.slice(0,3).map(f => (
-                          <span key={f} className="text-xs bg-slate-50 text-slate-600 px-2.5 py-1 rounded-full">{f}</span>
+                          <span key={f} className="service-card-tag">{f}</span>
                         ))}
                       </div>
-                      <div className="text-orange-500 font-semibold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+                      <div className="service-card-link">
                         Learn more <span className="group-hover:translate-x-1 transition-transform">→</span>
                       </div>
                     </div>
@@ -286,7 +280,7 @@ export default function HomePage() {
               <span className="text-4xl">✅</span>
             </div>
             <p className="text-slate-300 text-lg mb-10 max-w-2xl mx-auto">
-              Don't let cost stop you from getting the HVAC system your home deserves. We offer <span className="text-yellow-400 font-bold">0% APR special financing</span> through our authorized partnerships with Goodman and Liberty — making comfort affordable for every budget.
+              Don't let cost stop you from getting the HVAC system your home deserves. We offer <span className="text-yellow-400 font-bold">0% APR special financing</span> for our customers — making comfort affordable for every budget.
             </p>
             <div className="grid md:grid-cols-3 gap-5 mb-10">
               {[
@@ -301,13 +295,40 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-            <div className="flex flex-wrap justify-center gap-4">
-              <a href={`tel:${PHONE_DIRECT}`} className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black font-display font-extrabold px-8 py-4 rounded-2xl text-base shadow-xl transition-all hover:-translate-y-0.5">
-                📞 Call to Apply — {PHONE_DIRECT}
-              </a>
-              <Link href="/contact" className="flex items-center gap-2 border-2 border-white/30 text-white font-display font-bold px-8 py-4 rounded-2xl text-base hover:bg-white/10 transition-all">
-                Learn More →
-              </Link>
+            {/* QR Code + CTA row */}
+            <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+              {/* QR Code */}
+              <div className="flex flex-col items-center gap-3">
+                <div className="bg-white p-3 rounded-2xl shadow-2xl border-4 border-yellow-400">
+                  <img
+                    src="/images/QR.jpeg"
+                    alt="Scan to Apply for Financing"
+                    className="w-36 h-36 object-contain rounded-lg"
+                  />
+                </div>
+                <div className="text-center">
+                  <div className="text-yellow-400 font-bold text-sm uppercase tracking-wider">📱 Scan to Apply</div>
+                  <div className="text-white/60 text-xs mt-0.5">Quick financing application</div>
+                </div>
+              </div>
+
+              {/* Divider */}
+              <div className="hidden md:flex flex-col items-center gap-2">
+                <div className="w-0.5 h-16 bg-white/20 rounded-full" />
+                <span className="text-white/40 text-sm font-bold">OR</span>
+                <div className="w-0.5 h-16 bg-white/20 rounded-full" />
+              </div>
+              <div className="md:hidden text-white/40 font-bold">— OR —</div>
+
+              {/* Call buttons */}
+              <div className="flex flex-col gap-3">
+                <a href={`tel:${PHONE_DIRECT}`} className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black font-display font-extrabold px-8 py-4 rounded-2xl text-base shadow-xl transition-all hover:-translate-y-0.5">
+                  📞 Call to Apply — {PHONE_DIRECT}
+                </a>
+                <Link href="/contact" className="flex items-center gap-2 border-2 border-white/30 text-white font-display font-bold px-8 py-4 rounded-2xl text-base hover:bg-white/10 transition-all justify-center">
+                  Get Free Quote →
+                </Link>
+              </div>
             </div>
           </motion.div>
         </div>

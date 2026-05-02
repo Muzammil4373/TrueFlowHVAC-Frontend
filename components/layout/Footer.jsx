@@ -4,7 +4,7 @@ import { SERVICES } from '../../lib/services';
 
 const PHONE_DIRECT = process.env.NEXT_PUBLIC_PHONE        || '(630) 999-0127';
 const PHONE_OFFICE = process.env.NEXT_PUBLIC_PHONE_OFFICE || '(888) 581-5178';
-const WA           = process.env.NEXT_PUBLIC_WHATSAPP     || '18885815178';
+const WA           = process.env.NEXT_PUBLIC_WHATSAPP     || '(630) 999-0127';
 const EMAIL        = process.env.NEXT_PUBLIC_EMAIL        || 'truflowhvac@gmail.com';
 
 export default function Footer() {
@@ -15,7 +15,7 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
             <h3 className="font-display font-extrabold text-2xl text-white">Need HVAC Service Today?</h3>
-            <p className="text-orange-100 mt-1">24/7 emergency · Fast response · Certified techs · Authorized Goodman & Liberty Dealer</p>
+            <p className="text-orange-100 mt-1">24/7 emergency · Fast response · Certified techs · Licensed & Insured</p>
           </div>
           <div className="flex gap-3 flex-wrap justify-center">
             <a href={`tel:${PHONE_DIRECT}`} className="flex items-center gap-2 bg-white text-orange-600 font-bold px-5 py-3 rounded-xl hover:bg-orange-50 transition-all text-sm">
@@ -35,27 +35,17 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
         {/* Brand */}
         <div>
-          <div className="flex items-center gap-2.5 mb-5">
-            <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center font-bold text-xl">T</div>
-            <div>
-              <div className="font-display font-extrabold text-xl leading-none">TruFlow</div>
-              <div className="text-[10px] text-orange-400 tracking-widest uppercase">Heating & Cooling</div>
-            </div>
+          <div className="mb-5">
+            <img
+              src="/images/truFlow.logo.jpeg"
+              alt="TruFlow Heating and Cooling"
+              className="h-20 w-auto object-contain"
+            />
           </div>
           <p className="text-slate-400 text-sm leading-relaxed mb-5">
-            Chicagoland's trusted HVAC service. Authorized dealer of Goodman &amp; Liberty. Certified technicians, honest pricing, and 24/7 emergency response.
+            Chicagoland's trusted HVAC service. Licensed & insured. Certified technicians, honest pricing, and 24/7 emergency response.
           </p>
-          {/* Dealer badges */}
-          <div className="flex gap-2 mb-5">
-            <div className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-center">
-              <div className="text-[10px] text-slate-400 uppercase tracking-wider">Authorized</div>
-              <div className="text-white font-bold text-sm">Goodman</div>
-            </div>
-            <div className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-center">
-              <div className="text-[10px] text-slate-400 uppercase tracking-wider">Authorized</div>
-              <div className="text-white font-bold text-sm">Liberty</div>
-            </div>
-          </div>
+
           <div className="space-y-2">
             <a href={`tel:${PHONE_DIRECT}`} className="flex items-center gap-2 text-sm text-slate-300 hover:text-orange-400 transition-colors">📞 Direct: {PHONE_DIRECT}</a>
             <a href={`tel:${PHONE_OFFICE}`} className="flex items-center gap-2 text-sm text-slate-300 hover:text-orange-400 transition-colors">🏢 Office: {PHONE_OFFICE}</a>
@@ -112,7 +102,7 @@ export default function Footer() {
 
       <div className="border-t border-slate-800 py-5 px-4">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-slate-500">
-          <p>© {new Date().getFullYear()} TruFlow Heating & Cooling. Authorized Goodman & Liberty Dealer. All Rights Reserved.</p>
+          <p>© {new Date().getFullYear()} TruFlow Heating & Cooling. All Rights Reserved.</p>
           <div className="flex gap-5">
             <Link href="/privacy" className="hover:text-orange-400 transition-colors">Privacy Policy</Link>
             <Link href="/sitemap.xml" className="hover:text-orange-400 transition-colors">Sitemap</Link>

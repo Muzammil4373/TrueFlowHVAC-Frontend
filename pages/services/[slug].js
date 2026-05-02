@@ -15,14 +15,14 @@ export async function getStaticProps({ params }) {
 
 // Water heater service gets special image gallery
 const WATER_HEATER_IMAGES = [
-  { src: '/images/water-heater-tech.jpeg',  alt: 'Technician servicing gas water heater' },
-  { src: '/images/water-heater-unit.jpeg',  alt: 'Gas water heater unit — Rheem Performance Platinum' },
+  { src: '/images/water-heater-tech.jpeg',  alt: 'Technician servicing water heater' },
+  { src: '/images/water-heater-unit.jpeg',  alt: 'Water heater unit — Rheem Performance Platinum' },
   { src: '/images/goodman-system.jpeg',      alt: 'HVAC system components' },
 ];
 
 export default function ServicePage({ service }) {
   const PHONE_DIRECT = process.env.NEXT_PUBLIC_PHONE || '(630) 999-0127';
-  const isWaterHeater = service.slug === 'gas-water-heater';
+  const isWaterHeater = service.slug === 'water-heaters';
 
   return (
     <Layout
@@ -30,13 +30,13 @@ export default function ServicePage({ service }) {
       description={service.metaDesc}
       canonical={`/services/${service.slug}`}
     >
-    
+      {/* Hero */}
       <section className="relative min-h-[60vh] flex items-center overflow-hidden">
         <div className="absolute inset-0">
           {isWaterHeater ? (
             <img
               src="/images/water-heater-tech.jpeg"
-              alt="Gas water heater installation Chicago Illinois"
+              alt="Water heater installation Chicago Illinois"
               className="w-full h-full object-cover"
             />
           ) : (
@@ -81,12 +81,12 @@ export default function ServicePage({ service }) {
         </div>
       </section>
 
-      
+      {/* Water heater image gallery */}
       {isWaterHeater && (
         <section className="py-14 bg-slate-50 px-4">
           <div className="max-w-7xl mx-auto">
             <h2 className="font-display font-extrabold text-2xl text-brand-950 mb-6 text-center">
-              Gas Water Heater Services — Chicago Illinois
+              Water Heater Services — Chicago Illinois
             </h2>
             <div className="grid md:grid-cols-3 gap-5">
               {WATER_HEATER_IMAGES.map((img, i) => (
@@ -106,7 +106,7 @@ export default function ServicePage({ service }) {
             {/* Full description */}
             <div className="mt-8 bg-white border border-slate-100 rounded-3xl p-8 shadow-card">
               <h3 className="font-display font-extrabold text-xl text-brand-950 mb-3">
-                Expert Gas Water Heater Services in Chicago Illinois
+                Expert Water Heater Services in Chicago Illinois
               </h3>
               <p className="text-slate-600 leading-relaxed text-base">
                 We specialize in the installation and repair of gas water heaters for both residential homes and commercial properties across Chicago Illinois. Whether you need a brand-new system or fast, reliable repairs, our experienced team ensures efficient, safe, and long-lasting solutions to keep your hot water flowing. Our licensed and insured technicians work with all major brands including Rheem, Bradford White, A.O. Smith, and more — and every job is backed by our satisfaction guarantee.

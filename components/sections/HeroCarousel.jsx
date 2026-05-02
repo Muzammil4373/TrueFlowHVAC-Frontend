@@ -11,7 +11,7 @@ const slides = [
     tag: '24/7 Emergency Service — Chicago Illinois',
     h1a: 'Expert HVAC Services',
     h1b: 'in Chicago Illinois',
-    sub: 'Don’t let a failing furnace leave your family in the cold. Our EPA-certified heating specialists are on call 24/7 for emergency repairs, new furnace installations, and full system replacements. We stand behind every install with a 10-year labor and parts warranty you can trust.',
+    sub: 'Fast • Reliable • Affordable — 10-Year Labor & Parts Warranty. Licensed & Insured. EPA Certified.',
     badge: '🔥 Furnace & Heating',
     cta1: { label: '🚨 Call Now — ' + PHONE_DIRECT, href: `tel:${PHONE_DIRECT}`, style: 'btn-emergency' },
     cta2: { label: 'Get Free Quote', href: '/contact', style: 'btn-ghost' },
@@ -28,17 +28,17 @@ const slides = [
   },
   {
     // Using uploaded water heater tech photo as background
-    bg: 'https://stradaservices.com/wp-content/uploads/2024/05/01-choosing-an-hvac-system-for-your-home.jpg.webp',
-    tag: 'Gas Water Heater — Installation & Repair',
-    h1a: 'Gas Water Heater',
+    bg: 'https://trinityplumbingpdx.com/wp-content/uploads/2024/10/Repair-Old-Hot-Water-Heater.jpg',
+    tag: 'Water Heaters — Installation & Repair',
+    h1a: 'Water Heaters',
     h1b: 'Installation & Repair',
     sub: 'We specialize in the installation and repair of gas water heaters for both residential homes and commercial properties in Chicago Illinois.',
     badge: '🚿 Water Heaters',
     cta1: { label: '📞 ' + PHONE_DIRECT, href: `tel:${PHONE_DIRECT}`, style: 'btn-primary' },
-    cta2: { label: 'Water Heater Services', href: '/services/gas-water-heater', style: 'btn-ghost' },
+    cta2: { label: 'Water Heater Services', href: '/services/water-heaters', style: 'btn-ghost' },
   },
   {
-    bg: 'https://trinityplumbingpdx.com/wp-content/uploads/2024/10/Repair-Old-Hot-Water-Heater.jpg',
+    bg: 'https://stradaservices.com/wp-content/uploads/2024/05/01-choosing-an-hvac-system-for-your-home.jpg.webp',
     tag: 'Preventive Maintenance & Tune-Ups',
     h1a: 'Maintenance &',
     h1b: 'Tune-Ups',
@@ -140,7 +140,7 @@ export default function HeroCarousel() {
                       </span>
                     </motion.div>
 
-                   
+                    {/* Headline — very large, bright white */}
                     <motion.h1
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -234,14 +234,14 @@ export default function HeroCarousel() {
                       </div>
 
                       {/* Trust list — bright white */}
-                      {/* <div className="space-y-2 mb-5">
+                      <div className="space-y-2 mb-5">
                         {trustList.map(t => (
                           <div key={t} className="flex items-center gap-2.5 text-white text-sm font-semibold">
                             <span className="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">✓</span>
                             {t}
                           </div>
                         ))}
-                      </div> */}
+                      </div>
 
                       {/* Goodman badge — only here, once */}
                       {/* <div className="border-t border-white/15 pt-4 flex items-center gap-3">
