@@ -3,9 +3,9 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SERVICES } from '../../lib/services';
 
-const PHONE_DIRECT  = process.env.NEXT_PUBLIC_PHONE         || '(630) 999-0127';
-const PHONE_OFFICE  = process.env.NEXT_PUBLIC_PHONE_OFFICE  || '(888) 581-5178';
-const WA            = process.env.NEXT_PUBLIC_WHATSAPP      || '18885815178';
+const PHONE_DIRECT  = process.env.NEXT_PUBLIC_PHONE         || '(888) 581-5178';
+const PHONE_OFFICE  = process.env.NEXT_PUBLIC_PHONE_OFFICE  || '(630) 999-0127';
+const WA            = process.env.NEXT_PUBLIC_WHATSAPP      || '224-451-6560';
 
 export default function FloatingUI() {
   const [servicesOpen, setServicesOpen] = useState(false);
