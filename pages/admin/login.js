@@ -12,7 +12,7 @@ export default function AdminLogin() {
 
   useEffect(() => {
     if (typeof window !== 'undefined' && localStorage.getItem('truflow_token')) {
-      router.replace('/admin');
+      router.replace('/admin/login');
     }
   }, []);
 
@@ -24,7 +24,7 @@ export default function AdminLogin() {
       localStorage.setItem('truflow_token', res.data.token);
       localStorage.setItem('truflow_admin', JSON.stringify(res.data.admin));
       toast.success('Login successful!');
-      router.push('/admin');
+      router.push('/admin/track-ticket');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Invalid credentials.');
     } finally {
