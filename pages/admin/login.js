@@ -71,7 +71,7 @@ export default function AdminLogin() {
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <img
-              src="/images/truflow-logo.jpeg"
+              src="/images/truFlow.logo.jpeg"
               alt="TruFlow Logo"
               className="h-20 w-auto object-contain"
             />
